@@ -17,6 +17,8 @@ Stockfish: оценка классическая (материал + PST + мо�
 | Живой комментатор: точные идеи + банки фраз | `web/src/commentary/` |
 | Разбор PGN: точность, ACPL, метки `!! ! ?! ? ??`, индекс авантюрности | `web/src/analysis/gameAnalyzer.js` |
 | Flask-сервер с API | `server/app.py` + `node/bridge.mjs` |
+| Доска: `cm-chessboard` (MIT) + SVG-фигуры Cburnett | `web/vendor/`, `web/assets/` |
+| Готовые артефакты: один автономный HTML и пакет Flask | `tools/build-dist.sh` → `dist/` |
 | Полный набор тестов | `tools/check-all.sh` |
 
 ## Быстрый старт
@@ -25,6 +27,26 @@ Stockfish: оценка классическая (материал + PST + мо�
 ./tools/run-flask.sh          # http://0.0.0.0:5000
 # или без Flask:
 node web/server.cjs           # http://0.0.0.0:5173
+```
+
+## Готовые сборки
+
+```bash
+bash tools/build-dist.sh
+```
+
+получается:
+
+| файл | что это |
+|---|---|
+| `dist/gambitfish.html` | **автономный один файл** (~510 КБ): движок в base64, фигуры и стили внутри. Открывается двойным щелчком, работает офлайн |
+| `dist/gambitfish-flask.tar.gz` | пакет для запуска Flask-версии: `start.sh`, `server/`, `web/`, `node/` |
+| `docs/УСТАНОВКА-Linux-Mint.md` | пошаговый гайд для Linux Mint (зависимости, порт, автозапуск, разбор проблем) |
+
+Проверка автономного файла:
+
+```bash
+node tools/test-standalone.mjs
 ```
 
 Сборка WASM (нужен `zig` или `clang` с `wasm-ld`):

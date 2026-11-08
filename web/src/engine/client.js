@@ -15,7 +15,11 @@ export class EngineClient {
 
     async init(wasmUrl) {
         if (this.ready) return true;
-        this.worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
+        /* в автономной сборке воркер подставляется снаружи (Blob-URL),
+           иначе берём соседний файл worker.js */
+        const workerUrl = (typeof window !== 'undefined' && window.__GF_WORKER_URL__)
+            || new URL('./worker.js', import.meta.url);
+        this.worker = new Worker(workerUrl, { type: 'module' });
         this.worker.onmessage = (ev) => {
             const { id, ok, result, error } = ev.data;
             const p = this.pending.get(id);

@@ -1,0 +1,158 @@
+/*
+  GambitFish — тема доски поверх cm-chessboard (маркеры, подсветка,
+  размеры) и стили запасной простой доски.
+  GPL-3.0.
+*/
+
+/* --- размеры и материал доски --- */
+.cm-chessboard.gf-cm {
+    --gf-light: #f0d9b5;
+    --gf-dark: #b58863;
+    --gf-last: rgba(240, 161, 59, .55);
+    --gf-sel: rgba(99, 201, 140, .75);
+    width: 100%;
+    max-width: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 26px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06) inset;
+}
+
+.cm-chessboard.gf-cm .board {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.cm-chessboard.gf-cm .board .square.white {
+    fill: var(--gf-light);
+}
+
+.cm-chessboard.gf-cm .board .square.black {
+    fill: var(--gf-dark);
+}
+
+.cm-chessboard.gf-cm .coordinates .coordinate {
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: .62em;
+    fill: rgba(20, 22, 27, .55);
+}
+
+.cm-chessboard.gf-cm .coordinates .coordinate.black {
+    fill: rgba(255, 255, 255, .62);
+}
+
+/* подсветка последнего хода и выбора — поверх клеток */
+.cm-chessboard .marker.gf-last-a,
+.cm-chessboard .marker.gf-last-b {
+    fill: var(--gf-last, rgba(240, 161, 59, .5));
+    opacity: .85;
+    pointer-events: none;
+}
+
+.cm-chessboard .marker.gf-sel {
+    stroke: var(--gf-sel, rgba(99, 201, 140, .8));
+    stroke-width: 0.09;
+    fill: none;
+    pointer-events: none;
+}
+
+.cm-chessboard .marker.gf-check {
+    fill: rgba(239, 106, 106, .55);
+    pointer-events: none;
+}
+
+.cm-chessboard .marker.gf-move {
+    fill: rgba(30, 160, 110, .45);
+    pointer-events: none;
+}
+
+.cm-chessboard .marker.gf-cap {
+    fill: none;
+    stroke: rgba(239, 106, 106, .7);
+    stroke-width: 0.08;
+    pointer-events: none;
+}
+
+/* точка на пустом поле и «битое» поле */
+.cm-chessboard .marker.gf-dot {
+    fill: rgba(20, 24, 30, .28);
+    pointer-events: none;
+}
+
+/* стрелка-подсказка */
+.cm-chessboard .arrow.arrow-info .arrow-line {
+    stroke: #78aaff;
+    opacity: .78;
+}
+
+.cm-chessboard .arrow.arrow-info .arrow-head {
+    fill: #78aaff;
+}
+
+/* фигуры чуть «дороже» на вид */
+.cm-chessboard .pieces .piece {
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35));
+}
+
+.cm-chessboard .board.input-enabled .square:hover {
+    filter: brightness(1.06);
+}
+
+/* --- запасная простая доска --- */
+.gf-simple-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    aspect-ratio: 1;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 26px 60px rgba(0, 0, 0, .55);
+}
+
+.gf-simple-square {
+    position: relative;
+    border: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: min(6.2vw, 2.6rem);
+    cursor: pointer;
+    transition: filter .12s;
+}
+
+.gf-simple-square.light { background: #f0d9b5; }
+.gf-simple-square.dark { background: #b58863; }
+.gf-simple-square:hover { filter: brightness(1.06); }
+.gf-simple-square.last { box-shadow: inset 0 0 0 4px rgba(240, 161, 59, .65); }
+.gf-simple-square.selected { box-shadow: inset 0 0 0 4px rgba(99, 201, 140, .9); }
+.gf-simple-square.check { background: radial-gradient(circle, rgba(239, 106, 106, .9), rgba(239, 106, 106, .3) 65%, transparent 75%); }
+.gf-simple-square.hint { box-shadow: inset 0 0 0 4px rgba(120, 170, 255, .85); }
+.gf-simple-square.target::after {
+    content: "";
+    position: absolute;
+    width: 24%;
+    height: 24%;
+    border-radius: 50%;
+    background: rgba(30, 160, 110, .5);
+}
+
+.gf-simple-piece {
+    line-height: 1;
+    user-select: none;
+}
+
+.gf-simple-piece.white { color: #fff; text-shadow: 0 1px 0 #7a6a55, 0 3px 6px rgba(0, 0, 0, .4); }
+.gf-simple-piece.black { color: #171a21; text-shadow: 0 1px 0 rgba(255, 255, 255, .25), 0 3px 6px rgba(0, 0, 0, .4); }
+
+.gf-simple-file,
+.gf-simple-rank {
+    position: absolute;
+    font-size: .58rem;
+    font-weight: 700;
+    color: rgba(20, 22, 27, .5);
+    pointer-events: none;
+}
+
+.gf-simple-file { bottom: 1px; right: 4px; }
+.gf-simple-rank { top: 1px; left: 3px; }

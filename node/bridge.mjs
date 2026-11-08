@@ -29,6 +29,8 @@ function readStdin() {
 }
 
 const engine = await new NodeEngine().init();
+/* разбор партии не должен идти по книге: иначе оценки нулевые и «книжные» */
+if (process.argv.includes('--no-book')) engine.setBook(false);
 const commentator = new Commentator({ level: 'normal', side: 0, seed: 'server' });
 
 const input = JSON.parse((await readStdin()) || '{}');
@@ -57,6 +59,7 @@ try {
         const result = await analyzeGame(parsed.moves, engine, {
             movetime: input.movetime ?? 300,
             gambitMode: input.gambitMode ?? 1,
+            useBook: input.useBook !== false,
         });
         /* комментарии к ходам — из того же движка фраз */
         const notes = [];

@@ -99,6 +99,28 @@ const char* gf_search(int maxTimeMs, int depth, int gambitMode, int contempt) {
     return pv_to_string();
 }
 
+/* MultiPV: 0 — вторая линия не нужна, 1 — считать и её. */
+void gf_set_multipv(int on) { MultiPV = on ? 2 : 1; }
+
+/* Вторая линия последнего поиска: "uci ..." (пусто, если её нет). */
+const char* gf_last_pv2(void) {
+    static char buf[512];
+    char* o = buf;
+    int i;
+    o[0] = 0;
+    for (i = 0; i < SearchBest.pv2Len && i < 16; i++) {
+        char b[8];
+        move_to_uci(SearchBest.pv2[i], b);
+        if (i) { *o++ = ' '; }
+        strcpy(o, b);
+        o += strlen(b);
+    }
+    return buf;
+}
+
+int gf_last_score2(void) { return SearchBest.hasSecond ? SearchBest.score2 : 0; }
+int gf_last_has_second(void) { return SearchBest.hasSecond; }
+
 int gf_last_score(void) {
     int s = SearchBest.score;
     return s;

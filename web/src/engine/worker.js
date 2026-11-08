@@ -68,11 +68,21 @@ const handlers = {
     },
 
     /* Поиск, который реально оставляет позицию неизменной (удобно для UI). */
-    search: ({ movetime = 1000, depth = 64, gambitMode = 1, contempt = 0 }) => {
+    search: ({ movetime = 1000, depth = 64, gambitMode = 1, contempt = 0, multipv = 1 }) => {
         const fen = readString(wasm.gf_get_fen());
+        if (wasm.gf_set_multipv) wasm.gf_set_multipv(multipv > 1 ? 1 : 0);
         const pv = readString(wasm.gf_search(movetime, depth, gambitMode, contempt));
+        const lines = [{ score: wasm.gf_last_score(), pv, depth: wasm.gf_last_depth() }];
+        if (multipv > 1 && wasm.gf_last_has_second && wasm.gf_last_has_second()) {
+            lines.push({
+                score: wasm.gf_last_score2(),
+                pv: readString(wasm.gf_last_pv2()),
+                depth: wasm.gf_last_depth(),
+            });
+        }
         const result = {
             pv,
+            lines,
             book: wasm.gf_last_from_book(),
             score: wasm.gf_last_score(),
             depth: wasm.gf_last_depth(),

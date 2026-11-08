@@ -3,144 +3,210 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GambitFish — живой гамбитный движок</title>
-<link rel="stylesheet" href="./src/ui/style.css" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♞</text></svg>" />
+<title>GambitFish — гамбитный движок с живым комментарием</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88' fill='%23f0a13b'>♞</text></svg>" />
+<link rel="stylesheet" href="./vendor/cm-chessboard/chessboard.css" />
+<link rel="stylesheet" href="./assets/extensions/markers/markers.css" />
+<link rel="stylesheet" href="./assets/extensions/arrows/arrows.css" />
+<link rel="stylesheet" href="./src/ui/board-theme.css" />
+<link rel="stylesheet" href="./src/ui/app.css" />
 </head>
 <body>
-<header class="gf-header">
-  <div class="gf-brand">
-    <span class="gf-logo">♞</span>
-    <div>
+<div class="ambient"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">♞</div>
+    <div class="brand-text">
       <h1>GambitFish</h1>
-      <p>гамбитный движок на WASM · играет жертвы и объясняет их</p>
+      <p>движок на WASM · играет гамбиты и объясняет каждый ход</p>
     </div>
   </div>
-  <div class="gf-status">
-    <span id="engine-status" class="pill">загрузка WASM…</span>
-    <span id="engine-speed" class="pill subtle">—</span>
+  <div class="topbar-right">
+    <div class="chips">
+      <span id="chip-engine" class="chip loading">WASM загружается…</span>
+      <span id="chip-speed" class="chip dim">— узлов/с</span>
+      <span id="chip-book" class="chip dim">книга: 44 гамбита</span>
+    </div>
   </div>
 </header>
 
-<main class="gf-main">
-  <section class="gf-board-wrap">
-    <div class="gf-board-controls">
-      <button id="btn-new" class="ghost" title="Новая партия">⟲ Новая</button>
-      <button id="btn-undo" class="ghost" title="Отменить ход">↶ Отменить</button>
-      <button id="btn-flip" class="ghost" title="Перевернуть доску">⇅ Перевернуть</button>
-      <button id="btn-hint" class="ghost" title="Подсказка движка">💡 Подсказка</button>
-      <button id="btn-analyze" class="ghost" title="Разобрать позицию">🔍 Разбор</button>
+<main class="layout">
+  <!-- ---------------- доска ---------------- -->
+  <section class="panel board-panel">
+    <div class="panel-head">
+      <div class="players">
+        <div class="player" id="player-top">
+          <div class="avatar" data-side="black">♚</div>
+          <div class="who">
+            <span class="name">GambitFish</span>
+            <span class="sub" id="top-sub">—</span>
+          </div>
+        </div>
+        <div class="player" id="player-bottom">
+          <div class="avatar" data-side="white">♔</div>
+          <div class="who">
+            <span class="name">Вы</span>
+            <span class="sub" id="bottom-sub">белые</span>
+          </div>
+        </div>
+      </div>
+      <div class="evalbox">
+        <div class="eval-label">оценка</div>
+        <div class="evalnum" id="eval-num">0.00</div>
+        <div class="evalbar"><div class="evalbar-fill" id="eval-fill"></div></div>
+      </div>
     </div>
-    <div id="board" class="gf-board-host"></div>
-    <div class="gf-evalbar"><div id="eval-fill" class="gf-eval-fill"></div><span id="eval-text">0.00</span></div>
-    <div id="board-message" class="gf-board-message hidden"></div>
+
+    <div class="board-shell">
+      <div id="board"></div>
+      <div id="board-overlay" class="board-overlay hidden"></div>
+    </div>
+
+    <div class="board-toolbar">
+      <button id="btn-new" class="btn primary" title="Новая партия">⟲ Новая партия</button>
+      <button id="btn-undo" class="btn" title="Отменить ход">↶ Отменить</button>
+      <button id="btn-flip" class="btn" title="Перевернуть доску">⇅ Перевернуть</button>
+      <button id="btn-hint" class="btn" title="Подсказка движка">💡 Подсказка</button>
+      <button id="btn-eval" class="btn" title="Разбор позиции">🔍 Разбор</button>
+      <button id="btn-auto" class="btn" title="Движок играет за обе стороны">▶ Автоигра</button>
+    </div>
+
+    <div class="statusline">
+      <span id="status-main" class="status-main">Готов</span>
+      <span id="status-pv" class="status-pv"></span>
+    </div>
   </section>
 
-  <section class="gf-side">
-    <nav class="gf-tabs">
-      <button data-tab="chat" class="active">Комментарий</button>
-      <button data-tab="moves">Ходы</button>
-      <button data-tab="gambits">Гамбиты</button>
-      <button data-tab="review">Разбор PGN</button>
-      <button data-tab="settings">Настройки</button>
+  <!-- ---------------- боковая колонка ---------------- -->
+  <section class="panel side-panel">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="chat" class="active">Комментарий</button>
+      <button role="tab" data-tab="moves">Ходы</button>
+      <button role="tab" data-tab="gambits">Гамбиты</button>
+      <button role="tab" data-tab="review">Разбор PGN</button>
+      <button role="tab" data-tab="settings">Настройки</button>
     </nav>
 
-    <div class="gf-tab-body">
+    <div class="tab-body">
+      <!-- чат -->
       <div class="tab-panel active" data-panel="chat">
-        <div id="chat-log" class="gf-chat"></div>
-        <form id="chat-form" class="gf-chat-form">
-          <input id="chat-input" type="text" placeholder="Спросите: «зачем жертва?», «какой план?»" autocomplete="off" />
-          <button type="submit">→</button>
+        <div id="chat-log" class="chat"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" type="text" placeholder="Спросите: «зачем жертва?», «какой план?», «что тут играть?»" autocomplete="off" />
+          <button type="submit" aria-label="Отправить">→</button>
         </form>
+        <div class="chat-hints">
+          <button class="hintchip" data-q="зачем эта жертва?">зачем жертва?</button>
+          <button class="hintchip" data-q="какой план у нас?">какой план?</button>
+          <button class="hintchip" data-q="какой дебют мы играем?">какой дебют?</button>
+          <button class="hintchip" data-q="что играть дальше?">что играть?</button>
+        </div>
       </div>
 
+      <!-- ходы -->
       <div class="tab-panel" data-panel="moves">
-        <div id="move-list" class="gf-moves"></div>
-        <div id="engine-info" class="gf-engine-info"></div>
+        <div id="move-list" class="movelist"></div>
+        <div class="divider"></div>
+        <div id="engine-info" class="engine-info">Здесь появится информация о поиске.</div>
       </div>
 
+      <!-- гамбиты -->
       <div class="tab-panel" data-panel="gambits">
-        <div class="gf-gambit-filters">
-          <input id="gambit-filter" type="text" placeholder="Поиск гамбита…" />
+        <div class="filters">
+          <input id="gambit-filter" type="text" placeholder="Поиск по названию или метке…" />
         </div>
-        <div id="gambit-list" class="gf-gambit-list"></div>
-        <div id="gambit-detail" class="gf-gambit-detail"></div>
-      </div>
-
-      <div class="tab-panel" data-panel="review">
-        <div class="gf-review">
-          <textarea id="pgn-input" class="gf-pgn" spellcheck="false" placeholder="Вставьте PGN (или просто ходы: 1. e4 e5 2. f4 exf4 …)"></textarea>
-          <div class="gf-review-controls">
-            <label>время на позицию
-              <select id="review-movetime">
-                <option value="150">0.15 с (быстро)</option>
-                <option value="300" selected>0.3 с</option>
-                <option value="600">0.6 с (точнее)</option>
-                <option value="1200">1.2 с (глубоко)</option>
-              </select>
-            </label>
-            <button id="btn-review" class="ghost">Разобрать партию</button>
-            <button id="btn-review-sample" class="ghost">Пример</button>
+        <div class="stack">
+          <div id="gambit-list" class="gambit-list"></div>
+          <div id="gambit-detail" class="gambit-detail">
+            <p class="muted">Выберите гамбит — покажу идеи, планы, защиту и ловушки.</p>
           </div>
-          <div id="review-progress" class="gf-review-progress hidden"><div id="review-progress-fill"></div></div>
-          <div id="review-report" class="gf-review-report"></div>
-          <div id="review-moves" class="gf-review-moves"></div>
         </div>
       </div>
 
+      <!-- разбор PGN -->
+      <div class="tab-panel" data-panel="review">
+        <textarea id="pgn-input" class="pgn" spellcheck="false" placeholder="Вставьте PGN — целиком или просто ходы: 1. e4 e5 2. f4 exf4 …"></textarea>
+        <div class="row">
+          <label class="field">
+            <span>Время на позицию</span>
+            <select id="review-movetime">
+              <option value="150">0.15 с — быстро</option>
+              <option value="300" selected>0.3 с</option>
+              <option value="600">0.6 с — точнее</option>
+              <option value="1200">1.2 с — глубоко</option>
+            </select>
+          </label>
+          <button id="btn-review" class="btn primary">Разобрать</button>
+          <button id="btn-review-sample" class="btn">Пример</button>
+        </div>
+        <div id="review-progress" class="progress hidden"><div id="review-progress-fill"></div></div>
+        <div id="review-report" class="review-report"></div>
+        <div id="review-moves" class="review-moves"></div>
+      </div>
+
+      <!-- настройки -->
       <div class="tab-panel" data-panel="settings">
-        <div class="gf-settings">
-          <label>Ваша сторона
+        <div class="settings">
+          <label class="field">
+            <span>Ваша сторона</span>
             <select id="opt-side">
               <option value="white">Белые</option>
               <option value="black">Чёрные</option>
               <option value="random">Случайно</option>
             </select>
           </label>
-          <label>Уровень движка
+          <label class="field">
+            <span>Уровень</span>
             <select id="opt-level">
               <option value="club">Клубный (~2000)</option>
               <option value="master" selected>Мастер (~2400)</option>
-              <option value="grandmaster">Гроссмейстер (~2500+)</option>
+              <option value="grandmaster">Гроссмейстер (~2500)</option>
               <option value="max">Максимум (долго)</option>
             </select>
           </label>
-          <label>Время на ход
+          <label class="field">
+            <span>Время на ход</span>
             <select id="opt-movetime">
-              <option value="300">0.3 с (блиц)</option>
+              <option value="300">0.3 с — блиц</option>
               <option value="800">0.8 с</option>
               <option value="1500" selected>1.5 с</option>
               <option value="3000">3 с</option>
               <option value="6000">6 с</option>
             </select>
           </label>
-          <label>Аппетит к жертвам
+          <label class="field slider">
+            <span>Аппетит к жертвам <output id="opt-appetite-val">120%</output></span>
             <input id="opt-appetite" type="range" min="50" max="180" value="120" />
-            <output id="opt-appetite-val">120%</output>
           </label>
-          <label>Гамбитная оценка
+          <label class="field slider">
+            <span>Гамбитная оценка <output id="opt-gambit-val">120%</output></span>
             <input id="opt-gambit" type="range" min="0" max="160" value="120" />
-            <output id="opt-gambit-val">120%</output>
           </label>
-          <label class="checkbox">
-            <input id="opt-book" type="checkbox" checked /> дебютная книга гамбитов
-          </label>
-          <label class="checkbox">
-            <input id="opt-comments" type="checkbox" checked /> живой комментатор
-          </label>
-          <label>Стиль комментариев
+          <label class="switch"><input id="opt-book" type="checkbox" checked /><span>дебютная книга гамбитов</span></label>
+          <label class="switch"><input id="opt-comments" type="checkbox" checked /><span>живой комментатор</span></label>
+          <label class="field">
+            <span>Стиль комментариев</span>
             <select id="opt-comment-level">
               <option value="short">кратко</option>
               <option value="normal" selected>обычно</option>
               <option value="coach">с обучением</option>
             </select>
           </label>
-          <div class="gf-hint">Движок полностью локальный: WASM считает в браузере, ничего не уходит на сервер.</div>
+          <p class="note">Всё считается локально в браузере: WASM-движок, комментатор и разбор PGN. Ничего не уходит на сервер.</p>
         </div>
       </div>
     </div>
   </section>
 </main>
+
+<footer class="footer">
+  <span>GambitFish · GPL-3.0</span>
+  <span class="dot">·</span>
+  <span>доска: <a href="https://github.com/shaack/cm-chessboard" target="_blank" rel="noreferrer">cm-chessboard</a> (MIT), фигуры Cburnett (CC BY-SA)</span>
+  <span class="dot">·</span>
+  <span id="footer-mode">движок: был бы здесь</span>
+</footer>
 
 <script type="module" src="./src/ui/app.js"></script>
 </body>

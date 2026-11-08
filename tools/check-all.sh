@@ -23,6 +23,10 @@ node tools/test-worker.mjs
 echo "== интерфейс =="
 node tools/test-ui.mjs
 
+echo "== автономная сборка =="
+node tools/build-standalone.mjs
+node tools/test-standalone.mjs
+
 echo "== self-play =="
 node tools/selfplay.mjs 2 100
 

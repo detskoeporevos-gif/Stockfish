@@ -11,3 +11,6 @@ node_modules/
 __pycache__/
 *.pyc
 .playwright/
+
+# готовые артефакты (пересобираются: bash tools/build-dist.sh)
+dist/

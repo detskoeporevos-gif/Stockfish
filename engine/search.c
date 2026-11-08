@@ -366,6 +366,12 @@ static int search(Position* p, int depth, int alpha, int beta, int ply, int allo
     return best;
 }
 
+/* MultiPV: кроме лучшей линии сохраняем вторую — по ней разбор партий
+   считает потерю, если сыгранный ход не совпал с первым выбором поиска. */
+int MultiPV = 1;
+static int RootOrderSave[MAX_MOVES * 2];
+static int RootOrderCount = 0;
+
 void search_go(Position* p, int maxTimeMs, int depthLimit, int gambitMode, int contempt) {
     Move rootMoves[MAX_MOVES * 2], bookMove = 0;
     int rootScores[MAX_MOVES * 2];
@@ -386,6 +392,10 @@ void search_go(Position* p, int maxTimeMs, int depthLimit, int gambitMode, int c
 
     memset(&SearchBest, 0, sizeof(SearchBest));
     SearchBest.score = 0;
+    SearchBest.pv2Len = 0;
+    SearchBest.score2 = 0;
+    SearchBest.hasSecond = 0;
+    RootOrderCount = 0;
 
     if (in_check(&work) == 0 && popcount(work.bb[work.side][7]) == 0) { /* nothing */ }
 
@@ -440,13 +450,18 @@ void search_go(Position* p, int maxTimeMs, int depthLimit, int gambitMode, int c
                 if (!SearchStop && v > alpha)
                     v = -search(&rootPos, d - 1, -beta, -alpha, 1, 1, m, keyStack, 2);
             }
-            any = 1;
+            /* прерванный по времени поиск отдаёт мусорную оценку:
+               такую итерацию нельзя записывать как результат */
             if (SearchStop) break;
+            any = 1;
             rootScores[i] = (v == 0 ? 1 : v) + (d);  /* stable tie-break keeps ordering */
             if (v > bestThis) { bestThis = v; bestIdx = i; bestMoveIter = m; }
             if (v > alpha) alpha = v;
         }
-        if (!any) break;
+        if (!any || SearchStop || bestIdx < 0 || bestThis <= -VALUE_INFINITE) {
+            /* незавершённая итерация: оставляем результат предыдущей */
+            break;
+        }
 
         if (bestIdx > 0) {
             /* move best to front for the next iteration */
@@ -455,6 +470,22 @@ void search_go(Position* p, int maxTimeMs, int depthLimit, int gambitMode, int c
             for (i = bestIdx; i > 0; i--) { rootMoves[i] = rootMoves[i - 1]; rootScores[i] = rootScores[i - 1]; }
             rootMoves[0] = bm;
             rootScores[0] = bs;
+        }
+
+        /* вторая линия: лучший из оставшихся корневых ходов этого прохода */
+        {
+            int j, sIdx = -1, sBest = -VALUE_INFINITE;
+            for (j = 0; j < n; j++) {
+                if (j == bestIdx || !rootMoves[j]) continue;
+                /* rootScores хранит уже смещённое значение, но порядок верный */
+                if (rootScores[j] > sBest) { sBest = rootScores[j]; sIdx = j; }
+            }
+            if (MultiPV >= 2 && sIdx >= 0) {
+                SearchBest.pv2[0] = rootMoves[sIdx];
+                SearchBest.pv2Len = 1;
+                SearchBest.score2 = rootScores[sIdx] - d;  /* снять tie-break */
+                SearchBest.hasSecond = 1;
+            }
         }
 
         SearchBest.best = bestMoveIter;

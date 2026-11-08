@@ -25,6 +25,16 @@ export const MARK = {
     forced: { symbol: '□', label: 'вынужденно', cls: 'forced' },
 };
 
+/* «лучше было» должно быть в SAN: в UCI игроку это читать невозможно */
+function uciToSan(fen, uci) {
+    if (!fen || !uci) return '';
+    try {
+        const pos = new Position(fen);
+        const m = uciToMove(pos, uci);
+        return m ? moveToSan(pos, m) : uci;
+    } catch (e) { return uci; }
+}
+
 const WIN = (cp) => 1 / (1 + Math.exp(-cp / 320));
 const cpToWin = (cp) => Math.max(0, Math.min(1, WIN(Math.max(-2000, Math.min(2000, cp)))));
 
@@ -38,18 +48,31 @@ export async function analyzeGame(moves, engine, opts = {}) {
     const onProgress = opts.onProgress || (() => {});
     const gambitMode = opts.gambitMode ?? 1;
     const onlyMainLine = true;
+    /* разбор позиций не должен идти по дебютной книге: иначе вся партия
+       окажется «книжной» с нулевыми потерями и нулевым отчётом */
+    if (opts.useBook === false && typeof engine.setBook === 'function') {
+        try { await engine.setBook(false); } catch (e) { /* движок без книги */ }
+    }
 
     const positions = [];
     /* оценка стартовой позиции */
     const startFen = moves.length ? moves[0].fenBefore : opts.startFen;
     onProgress(0, moves.length + 1);
-    let prev = await engine.analyze(startFen, { movetime, depth, gambitMode });
+    /* оценка после каждой позиции; книга отключена — иначе вся партия
+       окажется «книжной» с нулевыми потерями */
+    const opts2 = { movetime, depth, gambitMode };
+    const parse = (res) => {
+        const lines = (res && res.lines && res.lines.length) ? res.lines
+            : [{ score: res.score, pv: res.pv, depth: res.depth }];
+        return { ...res, lines };
+    };
+    let prev = parse(await engine.analyze(startFen, opts2));
     positions.push({ ply: -1, fen: startFen, evalCp: prev.score, pv: prev.pv, book: prev.book });
 
     const analysed = [];
     for (let i = 0; i < moves.length; i++) {
         const mv = moves[i];
-        const cur = await engine.analyze(mv.fenAfter, { movetime, depth, gambitMode });
+        const cur = parse(await engine.analyze(mv.fenAfter, opts2));
         const pos = new Position(mv.fenBefore);
         const move = uciToMove(pos, mv.uci);
         let feat = null;
@@ -58,10 +81,21 @@ export async function analyzeGame(moves, engine, opts = {}) {
         /* оценка всегда с точки зрения стороны, сделавшей ход */
         const sign = pos.side === 0 ? 1 : -1;
         const evalBefore = prev.score * sign;      // до хода
-        const evalAfter = cur.score * -sign;       // после хода, для той же стороны
-        const lossCp = Math.max(0, evalBefore - evalAfter);
-        const bestWas = prev.pv ? prev.pv.split(' ')[0] : '';
+        /* если сыгранный ход есть во второй линии поиска, честнее брать
+           оценку из неё: иначе потеря считается по «лучшей» линии */
         const played = mv.uci;
+        let evalAfter = cur.score * -sign;         // после хода, для той же стороны
+        if (cur.lines && cur.lines.length > 1) {
+            const hit = cur.lines.find((l) => l.pv && l.pv.split(' ')[0] === played);
+            if (hit) evalAfter = hit.score * -sign;
+        }
+        /* разные глубины на соседних позициях дают ложные потери;
+           сглаживаем: слишком большой скачок при малой глубине не считаем */
+        let lossCp = Math.max(0, evalBefore - evalAfter);
+        const shallow = Math.min(prev.depth || 0, cur.depth || 0);
+        if (shallow <= 2 && lossCp > 100) lossCp = 0;
+        const bestWas = prev.pv ? prev.pv.split(' ')[0] : '';
+        /* «лучше было» — SAN лучшего хода в той позиции */
 
         let mark = 'good';
         const mat = feat ? materialBalance(pos) : null;
@@ -96,6 +130,7 @@ export async function analyzeGame(moves, engine, opts = {}) {
             evalBefore,
             evalAfter,
             bestWas,
+            bestSan: uciToSan(mv.fenBefore, bestWas),
             bestScore: prev.score,
             scoreAfter: cur.score,
             depth: cur.depth,
@@ -120,6 +155,9 @@ export async function analyzeGame(moves, engine, opts = {}) {
         white: makeStats(analysed, 0),
         black: makeStats(analysed, 1),
         sacrifices: analysed.filter((m) => m.sacrifice).length,
+        /* «рискованные» решения: материал отдан косвенно (например, рокировка
+           в Муцио, после которой сносится фигура) */
+        risky: analysed.filter((m) => m.allowsSacrifice && !m.sacrifice).length,
         adventureIndex: 0,
         mostAdventurous: null,
         marks: analysed.map((m) => ({ san: m.san, mark: m.mark, lossCp: m.lossCp })),
@@ -139,7 +177,7 @@ export async function analyzeGame(moves, engine, opts = {}) {
     for (const key of ['white', 'black']) {
         const st = summary[key];
         st.accuracy = st.moves ? Math.max(0, Math.min(100,
-            Math.round(103.1668 * Math.exp(-0.04354 * (st.acpl / 100)) - 3.1669))) : 0;
+            Math.round(103.1668 * Math.exp(-0.04354 * Math.min(st.acpl, 2000) / 100) - 3.1669))) : 0;
     }
     return { analysed, positions, summary };
 }
@@ -168,10 +206,10 @@ export function describeGame(result, commentator) {
     const lines = [];
     lines.push(`Разбор партии: ${result.analysed.length} полуходов.`);
     lines.push(`Точность: белые ${s.white.accuracy}% (ACPL ${s.white.acpl}), чёрные ${s.black.accuracy}% (ACPL ${s.black.acpl}).`);
-    lines.push(`Жертв: ${s.sacrifices}. Индекс авантюрности: ${s.adventureIndex}/10.`);
+    lines.push(`Жертв: ${s.sacrifices}. Рискованных решений: ${s.risky || 0}. Индекс авантюрности: ${s.adventureIndex}/10.`);
     const worst = result.analysed.slice().sort((a, b) => b.lossCp - a.lossCp)[0];
     if (worst && worst.lossCp > 100) {
-        lines.push(`Ключевой перелом: ${worst.san} (потеря ${(worst.lossCp / 100).toFixed(2)}); лучше было ${worst.bestWas}.`);
+        lines.push(`Ключевой перелом: ${worst.san} (потеря ${(worst.lossCp / 100).toFixed(2)}); лучше было ${worst.bestSan || worst.bestWas}.`);
     }
     const brill = result.analysed.filter((m) => m.mark === 'brilliant');
     if (brill.length) lines.push(`Лучшие моменты: ${brill.slice(0, 4).map((m) => m.san).join(', ')}.`);

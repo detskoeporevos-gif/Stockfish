@@ -145,11 +145,17 @@ typedef struct {
     U64  nodes;
     int  timeMs;
     int  bookMove;      /* 1 if best came from book */
+    /* вторая линия (MultiPV) — для разбора партий */
+    Move pv2[MAX_PLY];
+    int  pv2Len;
+    int  score2;
+    int  hasSecond;
 } SearchResult;
 
 void search_init(void);
 void search_go(Position* p, int maxTimeMs, int depthLimit, int gambitMode, int contempt);
 extern SearchResult SearchBest;
+extern int MultiPV;                 /* 1 = обычный поиск, 2 = нужна вторая линия */
 extern volatile int SearchStop;
 extern int UseOpeningBook;
 int  probe_book(const Position* p, Move* out);

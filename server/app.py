@@ -51,7 +51,8 @@ def node_binary() -> str:
     return exe
 
 
-def call_engine(payload: dict[str, Any], timeout: float = 300.0) -> dict[str, Any]:
+def call_engine(payload: dict[str, Any], timeout: float = 300.0,
+                no_book: bool = False) -> dict[str, Any]:
     """Один вызов node/bridge.mjs. Обмен — JSON через stdin/stdout."""
     if not BRIDGE.exists():
         raise RuntimeError(f"нет файла мостика: {BRIDGE}")
@@ -61,7 +62,7 @@ def call_engine(payload: dict[str, Any], timeout: float = 300.0) -> dict[str, An
             "не собран WASM: запустите tools/build-wasm.sh (нужен zig или clang+wasm-ld)"
         )
     proc = subprocess.run(
-        [node_binary(), str(BRIDGE)],
+        [node_binary(), str(BRIDGE)] + (["--no-book"] if no_book else []),
         input=json.dumps(payload, ensure_ascii=False),
         capture_output=True,
         text=True,
@@ -98,6 +99,22 @@ def sources(sub: str):
     return send_from_directory(WEB_DIR / "src", sub)
 
 
+@app.route("/assets/<path:sub>")
+def assets(sub: str):
+    """SVG-фигуры, спрайты маркеров и стрелок для доски."""
+    resp = send_from_directory(WEB_DIR / "assets", sub)
+    resp.headers["Cache-Control"] = "public, max-age=86400"
+    return resp
+
+
+@app.route("/vendor/<path:sub>")
+def vendor(sub: str):
+    """cm-chessboard (MIT) — вендоренная библиотека доски."""
+    resp = send_from_directory(WEB_DIR / "vendor", sub)
+    resp.headers["Cache-Control"] = "public, max-age=86400"
+    return resp
+
+
 @app.route("/health")
 def health():
     return jsonify({
@@ -124,7 +141,8 @@ def api_analyze():
             "pgn": pgn,
             "movetime": int(body.get("movetime", 300)),
             "gambitMode": int(body.get("gambitMode", 1)),
-        })
+            "useBook": bool(body.get("useBook", False)),
+        }, no_book=not bool(body.get("useBook", False)))
         return jsonify(data)
     except Exception as exc:  # noqa: BLE001
         return jsonify({"ok": False, "error": str(exc)}), 500

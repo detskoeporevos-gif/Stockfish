@@ -45,14 +45,26 @@ export class NodeEngine {
 
     setFen(fen) { this.wasm.gf_set_fen(this.write(fen)); return this; }
 
+    setBook(on) { this.wasm.gf_set_book(on ? 1 : 0); return this; }
+
+    setMultiPV(on) {
+        if (this.wasm.gf_set_multipv) this.wasm.gf_set_multipv(on ? 1 : 0);
+        return this;
+    }
+
     legalMoves() { return this.read(this.wasm.gf_legal_moves()).split(' ').filter(Boolean); }
 
     /* интерфейс, совместимый с gameAnalyzer */
     async analyze(fen, { movetime = 300, depth = 64, gambitMode = 1, contempt = 0 } = {}) {
         this.setFen(fen);
         const pv = this.read(this.wasm.gf_search(movetime, depth, gambitMode, contempt));
+        const hasSecond = this.wasm.gf_last_has_second ? this.wasm.gf_last_has_second() : 0;
         return {
             pv,
+            lines: hasSecond ? [
+                { score: this.wasm.gf_last_score(), pv },
+                { score: this.wasm.gf_last_score2(), pv: this.read(this.wasm.gf_last_pv2()) },
+            ] : [{ score: this.wasm.gf_last_score(), pv }],
             score: this.wasm.gf_last_score(),
             depth: this.wasm.gf_last_depth(),
             seldepth: this.wasm.gf_last_seldepth(),
