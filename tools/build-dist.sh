@@ -48,5 +48,13 @@ tar -czf "$DIST/gambitfish-flask.tar.gz" -C "$DIST" gambitfish
 SIZE=$(du -h "$DIST/gambitfish-flask.tar.gz" | cut -f1)
 echo "   -> dist/gambitfish-flask.tar.gz ($SIZE)"
 
+# тот же пакет в zip — привычнее для Windows и для скачивания с GitHub
+rm -f "$DIST/gambitfish-flask.zip"
+( cd "$DIST" && zip -qr gambitfish-flask.zip gambitfish )
+echo "   -> dist/gambitfish-flask.zip ($(du -h "$DIST/gambitfish-flask.zip" | cut -f1))"
+
+# отдельно один автономный файл — его удобно качать без распаковки
+cp "$DIST/gambitfish.html" "$DIST/gambitfish-standalone.html"
+
 echo "== 4. итог =="
 ls -lh "$DIST" | sed 's/^/   /'
