@@ -56,5 +56,12 @@ echo "   -> dist/gambitfish-flask.zip ($(du -h "$DIST/gambitfish-flask.zip" | cu
 # отдельно один автономный файл — его удобно качать без распаковки
 cp "$DIST/gambitfish.html" "$DIST/gambitfish-standalone.html"
 
-echo "== 4. итог =="
+echo "== 4. копия для скачивания с GitHub =="
+mkdir -p "$ROOT/release"
+cp "$DIST/gambitfish-flask.zip" "$DIST/gambitfish-flask.tar.gz" \
+   "$DIST/gambitfish-standalone.html" "$ROOT/release/"
+cp docs/УСТАНОВКА-Linux-Mint.md "$ROOT/release/"
+echo "   -> release/ (лежит в репозитории, качается обычной ссылкой)"
+
+echo "== 5. итог =="
 ls -lh "$DIST" | sed 's/^/   /'
