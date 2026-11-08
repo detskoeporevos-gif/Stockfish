@@ -43,6 +43,24 @@ bash tools/build-dist.sh
 | `dist/gambitfish-flask.tar.gz` | пакет для запуска Flask-версии: `start.sh`, `server/`, `web/`, `node/` |
 | `docs/УСТАНОВКА-Linux-Mint.md` | пошаговый гайд для Linux Mint (зависимости, порт, автозапуск, разбор проблем) |
 
+### Скачать готовое (без сборки)
+
+Архивы лежат прямо в репозитории, в папке [`release/`](release/):
+
+| Файл | Ссылка |
+|---|---|
+| Пакет Flask (zip) | <https://raw.githubusercontent.com/detskoeporevos-gif/Stockfish/arena/7cbe02f0-stockfish/release/gambitfish-flask.zip> |
+| Пакет Flask (tar.gz) | <https://raw.githubusercontent.com/detskoeporevos-gif/Stockfish/arena/7cbe02f0-stockfish/release/gambitfish-flask.tar.gz> |
+| Автономный HTML | <https://raw.githubusercontent.com/detskoeporevos-gif/Stockfish/arena/7cbe02f0-stockfish/release/gambitfish-standalone.html> |
+| Гайд для Linux Mint | <https://raw.githubusercontent.com/detskoeporevos-gif/Stockfish/arena/7cbe02f0-stockfish/release/УСТАНОВКА-Linux-Mint.md> |
+
+Из терминала:
+
+```bash
+curl -LO https://raw.githubusercontent.com/detskoeporevos-gif/Stockfish/arena/7cbe02f0-stockfish/release/gambitfish-flask.zip
+unzip gambitfish-flask.zip && cd gambitfish && ./start.sh
+```
+
 Проверка автономного файла:
 
 ```bash
