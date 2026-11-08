@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GambitFish — живой гамбитный движок</title>
+<link rel="stylesheet" href="./src/ui/style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♞</text></svg>" />
+</head>
+<body>
+<header class="gf-header">
+  <div class="gf-brand">
+    <span class="gf-logo">♞</span>
+    <div>
+      <h1>GambitFish</h1>
+      <p>гамбитный движок на WASM · играет жертвы и объясняет их</p>
+    </div>
+  </div>
+  <div class="gf-status">
+    <span id="engine-status" class="pill">загрузка WASM…</span>
+    <span id="engine-speed" class="pill subtle">—</span>
+  </div>
+</header>
+
+<main class="gf-main">
+  <section class="gf-board-wrap">
+    <div class="gf-board-controls">
+      <button id="btn-new" class="ghost" title="Новая партия">⟲ Новая</button>
+      <button id="btn-undo" class="ghost" title="Отменить ход">↶ Отменить</button>
+      <button id="btn-flip" class="ghost" title="Перевернуть доску">⇅ Перевернуть</button>
+      <button id="btn-hint" class="ghost" title="Подсказка движка">💡 Подсказка</button>
+      <button id="btn-analyze" class="ghost" title="Разобрать позицию">🔍 Разбор</button>
+    </div>
+    <div id="board" class="gf-board-host"></div>
+    <div class="gf-evalbar"><div id="eval-fill" class="gf-eval-fill"></div><span id="eval-text">0.00</span></div>
+    <div id="board-message" class="gf-board-message hidden"></div>
+  </section>
+
+  <section class="gf-side">
+    <nav class="gf-tabs">
+      <button data-tab="chat" class="active">Комментарий</button>
+      <button data-tab="moves">Ходы</button>
+      <button data-tab="gambits">Гамбиты</button>
+      <button data-tab="review">Разбор PGN</button>
+      <button data-tab="settings">Настройки</button>
+    </nav>
+
+    <div class="gf-tab-body">
+      <div class="tab-panel active" data-panel="chat">
+        <div id="chat-log" class="gf-chat"></div>
+        <form id="chat-form" class="gf-chat-form">
+          <input id="chat-input" type="text" placeholder="Спросите: «зачем жертва?», «какой план?»" autocomplete="off" />
+          <button type="submit">→</button>
+        </form>
+      </div>
+
+      <div class="tab-panel" data-panel="moves">
+        <div id="move-list" class="gf-moves"></div>
+        <div id="engine-info" class="gf-engine-info"></div>
+      </div>
+
+      <div class="tab-panel" data-panel="gambits">
+        <div class="gf-gambit-filters">
+          <input id="gambit-filter" type="text" placeholder="Поиск гамбита…" />
+        </div>
+        <div id="gambit-list" class="gf-gambit-list"></div>
+        <div id="gambit-detail" class="gf-gambit-detail"></div>
+      </div>
+
+      <div class="tab-panel" data-panel="review">
+        <div class="gf-review">
+          <textarea id="pgn-input" class="gf-pgn" spellcheck="false" placeholder="Вставьте PGN (или просто ходы: 1. e4 e5 2. f4 exf4 …)"></textarea>
+          <div class="gf-review-controls">
+            <label>время на позицию
+              <select id="review-movetime">
+                <option value="150">0.15 с (быстро)</option>
+                <option value="300" selected>0.3 с</option>
+                <option value="600">0.6 с (точнее)</option>
+                <option value="1200">1.2 с (глубоко)</option>
+              </select>
+            </label>
+            <button id="btn-review" class="ghost">Разобрать партию</button>
+            <button id="btn-review-sample" class="ghost">Пример</button>
+          </div>
+          <div id="review-progress" class="gf-review-progress hidden"><div id="review-progress-fill"></div></div>
+          <div id="review-report" class="gf-review-report"></div>
+          <div id="review-moves" class="gf-review-moves"></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="settings">
+        <div class="gf-settings">
+          <label>Ваша сторона
+            <select id="opt-side">
+              <option value="white">Белые</option>
+              <option value="black">Чёрные</option>
+              <option value="random">Случайно</option>
+            </select>
+          </label>
+          <label>Уровень движка
+            <select id="opt-level">
+              <option value="club">Клубный (~2000)</option>
+              <option value="master" selected>Мастер (~2400)</option>
+              <option value="grandmaster">Гроссмейстер (~2500+)</option>
+              <option value="max">Максимум (долго)</option>
+            </select>
+          </label>
+          <label>Время на ход
+            <select id="opt-movetime">
+              <option value="300">0.3 с (блиц)</option>
+              <option value="800">0.8 с</option>
+              <option value="1500" selected>1.5 с</option>
+              <option value="3000">3 с</option>
+              <option value="6000">6 с</option>
+            </select>
+          </label>
+          <label>Аппетит к жертвам
+            <input id="opt-appetite" type="range" min="50" max="180" value="120" />
+            <output id="opt-appetite-val">120%</output>
+          </label>
+          <label>Гамбитная оценка
+            <input id="opt-gambit" type="range" min="0" max="160" value="120" />
+            <output id="opt-gambit-val">120%</output>
+          </label>
+          <label class="checkbox">
+            <input id="opt-book" type="checkbox" checked /> дебютная книга гамбитов
+          </label>
+          <label class="checkbox">
+            <input id="opt-comments" type="checkbox" checked /> живой комментатор
+          </label>
+          <label>Стиль комментариев
+            <select id="opt-comment-level">
+              <option value="short">кратко</option>
+              <option value="normal" selected>обычно</option>
+              <option value="coach">с обучением</option>
+            </select>
+          </label>
+          <div class="gf-hint">Движок полностью локальный: WASM считает в браузере, ничего не уходит на сервер.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="./src/ui/app.js"></script>
+</body>
+</html>

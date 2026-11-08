@@ -1,0 +1,433 @@
+[
+  {
+    "id": "kings-gambit",
+    "name": "Королевский гамбит",
+    "variants": [
+      "e4 e5 f4",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 Nc3",
+      "e4 e5 f4 exf4 Bc4 Nf6 e5 d5",
+      "e4 e5 f4 exf4 Nf3 d5 exd5 Nf6",
+      "e4 e5 f4 exf4 Bc4 Bc5",
+      "e4 e5 f4 d5 exd5 e4 d3 Nf6",
+      "e4 e5 f4 d5 exd5 e4 Nc3 Nf6"
+    ]
+  },
+  {
+    "id": "muzio-gambit",
+    "name": "Гамбит Муцио",
+    "variants": [
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5 d3 Bh6 Nc3 Nc6",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5 d3 Bh6 Nc3",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5 d3 Bh6 Kh1",
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qe7"
+    ]
+  },
+  {
+    "id": "allgaier-gambit",
+    "name": "Гамбит Альгайера",
+    "variants": [
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ng5",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ng5 h6 Nxf7 Kxf7 d4 d5 Bc4",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ng5 h6 Nxf7 Kxf7 Bc4+ d5 Bxd5+ Kg7",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ng5 h6 Nxf7 Kxf7 d4 d5 Bd3"
+    ]
+  },
+  {
+    "id": "kieseritzky-gambit",
+    "name": "Гамбит Кизерицкого",
+    "variants": [
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5 Nf6 d4 d6 Nd3 Nxe4",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5 Qe7 d4 Bg7",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5 h5 Bc4 Rh7"
+    ]
+  },
+  {
+    "id": "bishops-gambit",
+    "name": "Гамбит слона",
+    "variants": [
+      "e4 e5 f4 exf4 Bc4",
+      "e4 e5 f4 exf4 Bc4 Nf6 Nc3 c6 d4 d5",
+      "e4 e5 f4 exf4 Bc4 Qh4+ Kf1 d6 d4 g5",
+      "e4 e5 f4 exf4 Bc4 d5 Bxd5 Nf6"
+    ]
+  },
+  {
+    "id": "evans-gambit",
+    "name": "Гамбит Эванса",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 b4",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O dxc3 Qb3",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 d6 Qb3",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Be7 d4",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O Bb6"
+    ]
+  },
+  {
+    "id": "italian-gambit",
+    "name": "Итальянский гамбит",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 d4",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 d4 Bxd4 Nxd4 Qf6",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 d4 exd4 O-O d6",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 d4 Bxd4 O-O"
+    ]
+  },
+  {
+    "id": "scotch-gambit",
+    "name": "Шотландский гамбит",
+    "variants": [
+      "e4 e5 Nf3 Nc6 d4 exd4 Bc4",
+      "e4 e5 Nf3 Nc6 d4 exd4 Bc4 Bc5 c3 Nf6 O-O dxc3",
+      "e4 e5 Nf3 Nc6 d4 exd4 Bc4 Nf6 e5 d5",
+      "e4 e5 Nf3 Nc6 d4 exd4 Bc4 Qe7"
+    ]
+  },
+  {
+    "id": "danisch-gambit",
+    "name": "Датская гамбит",
+    "variants": [
+      "e4 e5 d4 exd4 c3",
+      "e4 e5 d4 exd4 c3 dxc3 Bc4 cxb2 Bxb2 d5 Bxd5 Nf6",
+      "e4 e5 d4 exd4 c3 dxc3 Bc4 cxb2 Bxb2 c6 Qb3",
+      "e4 e5 d4 exd4 c3 d5 exd5 Qxd5 cxd4",
+      "e4 e5 d4 exd4 c3 d3 Bxd3"
+    ]
+  },
+  {
+    "id": "goering-gambit",
+    "name": "Гамбит Гёринга",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 d4",
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 d4 exd4 Nxd4 Bb4 Nxc6 bxc6 Bd3 d5",
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 d4 exd4 Nd5",
+      "e4 e5 Nc3 Nf6 f4"
+    ]
+  },
+  {
+    "id": "smith-morra",
+    "name": "Гамбит Смита–Морра",
+    "variants": [
+      "e4 c5 d4 cxd4 c3",
+      "e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Bc4 e6 Nf3 d6 O-O Nf6",
+      "e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nf6 e5 Nd5 Nf3",
+      "e4 c5 d4 cxd4 c3 d3 Bxd3 Nc6 Nf3",
+      "e4 c5 d4 cxd4 c3 dxc3 Nxc3 e6 Nf3 Nc6 Bc4"
+    ]
+  },
+  {
+    "id": "wing-gambit",
+    "name": "Гамбит «крыло» (Wing Gambit)",
+    "variants": [
+      "e4 c5 b4",
+      "e4 c5 b4 cxb4 a3 d5 exd5 Qxd5",
+      "e4 c5 b4 cxb4 a3 bxa3 Nxa3",
+      "e4 c5 b4 cxb4 d4 d5"
+    ]
+  },
+  {
+    "id": "benko-gambit",
+    "name": "Гамбит Бенко (Волжский)",
+    "variants": [
+      "d4 Nf6 c4 c5 d5 b5",
+      "d4 Nf6 c4 c5 d5 b5 cxb5 a6 b6 e6",
+      "d4 Nf6 c4 c5 d5 b5 cxb5 a6 b6 Qxb6",
+      "d4 Nf6 c4 c5 d5 b5 Nc3 b4 Na4"
+    ]
+  },
+  {
+    "id": "budapest-gambit",
+    "name": "Будапештский гамбит",
+    "variants": [
+      "d4 Nf6 c4 e5",
+      "d4 Nf6 c4 e5 dxe5 Ng4 Nf3 Nc6",
+      "d4 Nf6 c4 e5 dxe5 Ng4 Bf4 Nc6 Nf3 Bb4+",
+      "d4 Nf6 c4 e5 dxe5 Ng4 e4"
+    ]
+  },
+  {
+    "id": "englund-gambit",
+    "name": "Гамбит Энглунда",
+    "variants": [
+      "d4 e5",
+      "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+",
+      "d4 e5 dxe5 Nc6 Nf3 Qe7 Qd5",
+      "d4 e5 dxe5 Nc6 c3"
+    ]
+  },
+  {
+    "id": "latvian-gambit",
+    "name": "Латышский гамбит",
+    "variants": [
+      "e4 e5 Nf3 f5",
+      "e4 e5 Nf3 f5 Nxe5 Qf6 d4 d6 Nf3 Qe7",
+      "e4 e5 Nf3 f5 Nxe5 Qf6 Nc3 Be7",
+      "e4 e5 Nf3 f5 exf5"
+    ]
+  },
+  {
+    "id": "elephant-gambit",
+    "name": "Гамбит слона (Elephant)",
+    "variants": [
+      "e4 e5 Nf3 d5",
+      "e4 e5 Nf3 d5 exd5 Bd6 d4 e4",
+      "e4 e5 Nf3 d5 Nxe5 dxe4 d4 Qxd4",
+      "e4 e5 Nf3 d5 exd5 Qxd5"
+    ]
+  },
+  {
+    "id": "halloween-gambit",
+    "name": "Хэллоуин-гамбит",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 Nxe5",
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 Nxe5 Nxe5 d4 Nc6 d5",
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 Nxe5 Nxe4 Nxe4 Nxe5 Qe2",
+      "e4 e5 Nf3 Nc6 Nc3 Nf6 Nxe5 Nxe5 d4 Ng6 e5"
+    ]
+  },
+  {
+    "id": "traxler",
+    "name": "Контратака Тракслера",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nd4 Kg3",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Qe7",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Bxf7+ Ke7"
+    ]
+  },
+  {
+    "id": "wilkes-barre",
+    "name": "Гамбит Уилкс-Барре",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Qf3 Nxc4 O-O",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+"
+    ]
+  },
+  {
+    "id": "fried-liver",
+    "name": "Атака «жареная печень»",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3 Nb4"
+    ]
+  },
+  {
+    "id": "blackmar-diemer",
+    "name": "Гамбит Блэкмара–Димера",
+    "variants": [
+      "d4 d5 e4 dxe4 Nc3",
+      "d4 d5 e4 dxe4 Nc3 Nf6 f3 exf3 Nxf3 e6 Bd3",
+      "d4 d5 e4 dxe4 Nc3 Nf6 f3 exf3 Qxf3 Qxd4",
+      "d4 d5 e4 dxe4 Nc3 Nc6 d5"
+    ]
+  },
+  {
+    "id": "from-gambit",
+    "name": "Гамбит Фрома",
+    "variants": [
+      "f4 e5",
+      "f4 e5 fxe5 d6 exd6 Bxd6 Nf3 Nf6",
+      "f4 e5 fxe5 d6 exd6 Bxd6 Nc3 Nf6",
+      "f4 e5 e4 d5"
+    ]
+  },
+  {
+    "id": "falkbeer",
+    "name": "Контргамбит Фалькбеера",
+    "variants": [
+      "e4 e5 f4 d5",
+      "e4 e5 f4 d5 exd5 e4 d3 Nf6 dxe4 Nxe4",
+      "e4 e5 f4 d5 exd5 e4 Nc3 Nf6 Bc4",
+      "e4 e5 f4 d5 fxe5 dxe4"
+    ]
+  },
+  {
+    "id": "marshall-attack",
+    "name": "Атака Маршалла",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d5",
+      "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 Nf6",
+      "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6",
+      "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 Nb6"
+    ]
+  },
+  {
+    "id": "jaenisch",
+    "name": "Гамбит Шлимана (Яниша)",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bb5 f5",
+      "e4 e5 Nf3 Nc6 Bb5 f5 Nc3 fxe4 Nxe4 d5",
+      "e4 e5 Nf3 Nc6 Bb5 f5 Nxe5 Qf6 d4 fxe4",
+      "e4 e5 Nf3 Nc6 Bb5 f5 exf5"
+    ]
+  },
+  {
+    "id": "rousseau",
+    "name": "Гамбит Руссо",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 f5",
+      "e4 e5 Nf3 Nc6 Bc4 f5 d3 Nf6 Nc3 Bb4",
+      "e4 e5 Nf3 Nc6 Bc4 f5 exf5"
+    ]
+  },
+  {
+    "id": "urusov",
+    "name": "Гамбит Урусова",
+    "variants": [
+      "e4 e5 Bc4 Nf6 d4 exd4 Nf3",
+      "e4 e5 Bc4 Nf6 d4 exd4 Nf3 Nxe4 Qe2",
+      "e4 e5 Bc4 Nf6 d4 exd4 Nf3 Nc6 O-O"
+    ]
+  },
+  {
+    "id": "cochrane-gambit",
+    "name": "Гамбит Кокрейна",
+    "variants": [
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nxf7",
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nxf7 Kxf7 d4 c5 Nc3",
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nxf7 Kxf7 d4 Be7 Bc4+"
+    ]
+  },
+  {
+    "id": "tennison",
+    "name": "Гамбит Теннисона",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6"
+    ]
+  },
+  {
+    "id": "milner-barry",
+    "name": "Гамбит Милнера-Барри",
+    "variants": [
+      "e4 e6 d4 d5 e5 c5 c3 Nc6 Nf3 Qb6 Bd3",
+      "e4 e6 d4 d5 e5 c5 c3 Nc6 Nf3 Qb6 Bd3 cxd4 cxd4 Qxd4 Nc3",
+      "e4 e6 d4 d5 e5 c5 c3 Nc6 Nf3 Qb6 Bd3 c4 Bc2"
+    ]
+  },
+  {
+    "id": "grob-gambit",
+    "name": "Гамбит Гроба",
+    "variants": [
+      "g4 d5 h3",
+      "g4 d5 h3 e5 d4",
+      "g4 d5 Bg2"
+    ]
+  },
+  {
+    "id": "duras-gambit",
+    "name": "Гамбит Дураса (Fred)",
+    "variants": [
+      "e4 f5",
+      "e4 f5 exf5 Nf6 d4 d5",
+      "e4 f5 exf5 Nf6 Nf3 d5",
+      "e4 f5 d3 Nf6"
+    ]
+  },
+  {
+    "id": "kadas",
+    "name": "Дебют Кадаша (Kadas)",
+    "variants": [
+      "h4 d5 h5",
+      "h4 d5 h5 e5 d4",
+      "h4 d5 h5 h6"
+    ]
+  },
+  {
+    "id": "petrov-gambit",
+    "name": "Гамбит Петрова",
+    "variants": [
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4",
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 d5",
+      "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d3 Nc5"
+    ]
+  },
+  {
+    "id": "greco-gambit",
+    "name": "Гамбит Греко",
+    "variants": [
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d4",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d4 exd4 cxd4 Bb4+ Nc3",
+      "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d4 Bb6"
+    ]
+  },
+  {
+    "id": "sicilian-gambit",
+    "name": "Сицилианский гамбит",
+    "variants": [
+      "e4 c5 b4 cxb4 a3 d5",
+      "e4 c5 b4 cxb4 a3 d5 exd5 Qxd5",
+      "e4 c5 b4 cxb4 a3 d5 e5"
+    ]
+  },
+  {
+    "id": "polish-gambit",
+    "name": "Польский гамбит",
+    "variants": [
+      "b4 e5 a3",
+      "b4 e5 a3 d5 Bb2 Nc6",
+      "b4 e5 Bb2 Bxb4 Bxe5"
+    ]
+  },
+  {
+    "id": "kostic-gambit",
+    "name": "Гамбит Костича",
+    "variants": [
+      "e4 d5 Nc3 dxe4 f3",
+      "e4 d5 Nc3 dxe4 f3 exf3 Nxf3 Nf6",
+      "e4 d5 Nc3 dxe4 f3 exf3"
+    ]
+  },
+  {
+    "id": "halloween-ng5",
+    "name": "Гамбит «Хэллоуин» (второй вариант)",
+    "variants": [
+      "e4 e5 Nc3 Nc6 f4",
+      "e4 e5 Nc3 Nc6 f4 exf4 Nf3 g5",
+      "e4 e5 Nc3 Nc6 f4 exf4 d4"
+    ]
+  },
+  {
+    "id": "prince-gambit",
+    "name": "Гамбит принца (2...f5)",
+    "variants": [
+      "e4 e5 f4 f5",
+      "e4 e5 f4 f5 exf5 e4",
+      "e4 e5 f4 f5 exf5 d5"
+    ]
+  },
+  {
+    "id": "brilliant-queen",
+    "name": "Гамбит «блестящий ферзь» (Qh5)",
+    "variants": [
+      "e4 e5 Qh5 Nc6 Bc4",
+      "e4 e5 Qh5 Nc6 Bc4 g6 Qf3",
+      "e4 e5 Qh5 Nc6 Bc4 Qe7 Nc3"
+    ]
+  },
+  {
+    "id": "kolisch",
+    "name": "Гамбит Колиша",
+    "variants": [
+      "e4 c5 Nf3 b5",
+      "e4 c5 Nf3 b5 e5 b4",
+      "e4 c5 Nf3 b5 d4 b4"
+    ]
+  },
+  {
+    "id": "schliemann-minor",
+    "name": "Гамбит «2...d5» в защите Филидора",
+    "variants": [
+      "e4 e5 Nf3 d6 d4 exd4",
+      "e4 e5 Nf3 d6 d4 exd4 Nxd4 Nf6 Nc3 Be7",
+      "e4 e5 Nf3 d6 d4 exd4 Qxd4 Nc6"
+    ]
+  }
+]
