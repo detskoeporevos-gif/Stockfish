@@ -140,7 +140,51 @@ xdg-open gambitfish.html
 | Страница открылась, но доска пустая | нажмите Ctrl+Shift+R (жёсткая перезагрузка кэша) |
 | В браузере «WASM не загрузился» | откройте `http://127.0.0.1:5000/health` — если `wasm:false`, файл `web/public/gambitfish.wasm` не распаковался, распакуйте архив заново |
 | Движок думает долго | вкладка «Настройки» → «Время на ход» поставьте 0.3–0.8 с |
-| Хочется совсем без Python | пользуйтесь `gambitfish.html` |
+| Хочется совсем без Python | пользуйтесь `gambitfish.html` или откройте `http://127.0.0.1:5000/standalone` |
+
+### Если apt сломан (`Неудовлетворённые зависимости`, `libpam-modules`, `nodejs : Зависит: libnode109`)
+
+Это проблема системы, а не GambitFish. Порядок:
+
+```bash
+sudo apt update
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+```
+
+Если снова ругается на libpam:
+
+```bash
+apt policy libpam-modules libpam-modules-bin
+sudo apt install --reinstall libpam-modules-bin
+sudo apt install -y libpam-modules
+sudo apt --fix-broken install
+```
+
+Проверьте, не мешает ли сторонний репозиторий Node (частый виновник):
+
+```bash
+apt-mark showhold
+ls /etc/apt/sources.list.d/
+sudo rm -f /etc/apt/sources.list.d/nodesource.*     # если такой есть
+sudo apt update && sudo apt install -y nodejs npm
+```
+
+**Node без apt** (проще всего, если apt не оживает):
+
+```bash
+cd ~
+curl -fsSLO https://nodejs.org/dist/v20.18.0/node-v20.18.0-linux-x64.tar.xz
+tar -xf node-v20.18.0-linux-x64.tar.xz
+mkdir -p ~/.local/node && cp -r node-v20.18.0-linux-x64/* ~/.local/node/
+echo 'export PATH="$HOME/.local/node/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc && node --version
+```
+
+`start.sh` ищет `node` не только в PATH, но и в `~/.local/node/bin`,
+`~/.nvm/...`, `/usr/local/bin`, `/snap/bin` — после такого раскопа он
+найдётся сам. Если node всё равно нет, `start.sh` предложит открыть
+автономный `gambitfish.html` (он работает без Node и Python вовсе).
 
 ---
 

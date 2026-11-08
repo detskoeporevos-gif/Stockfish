@@ -45,10 +45,29 @@ except Exception:                      # noqa: BLE001
 # --------------------------------------------------------------------------
 
 def node_binary() -> str:
-    exe = shutil.which("node")
-    if not exe:
-        raise RuntimeError("не найден node — он нужен для WASM-движка")
-    return exe
+    """Ищем node не только в PATH: часто он стоит локально (nvm, ~/.local/node)."""
+    exe = shutil.which("node") or shutil.which("nodejs")
+    if exe:
+        return exe
+    home = Path.home()
+    candidates = [
+        home / ".local" / "node" / "bin" / "node",
+        home / ".nvm" / "current" / "bin" / "node",
+        Path("/usr/local/bin/node"),
+        Path("/snap/bin/node"),
+    ]
+    # nvm ставит версии в ~/.nvm/versions/node/vX.Y.Z/bin/node
+    nvm_root = home / ".nvm" / "versions" / "node"
+    if nvm_root.is_dir():
+        candidates += sorted(nvm_root.glob("*/bin/node"), reverse=True)
+    for path in candidates:
+        if path.is_file() and os.access(path, os.X_OK):
+            return str(path)
+    raise RuntimeError(
+        "не найден node — он нужен для WASM-движка. "
+        "Установите: sudo apt install nodejs, либо распакуйте Node в ~/.local/node. "
+        "Без Node работает автономный файл gambitfish-standalone.html."
+    )
 
 
 def call_engine(payload: dict[str, Any], timeout: float = 300.0,
@@ -94,6 +113,19 @@ def wasm():
     return send_from_directory(PUBLIC_DIR, "gambitfish.wasm", mimetype="application/wasm")
 
 
+@app.route("/standalone")
+def standalone():
+    """Автономная версия одним файлом — открывается без Node и WASM-сервера."""
+    for name in ("gambitfish.html", "web/standalone.html", "gambitfish-standalone.html"):
+        candidate = ROOT / name
+        if candidate.exists():
+            return send_from_directory(candidate.parent, candidate.name, mimetype="text/html")
+    return (
+        jsonify({"ok": False, "error": "нет автономной сборки: соберите bash tools/build-dist.sh"}),
+        404,
+    )
+
+
 @app.route("/src/<path:sub>")
 def sources(sub: str):
     return send_from_directory(WEB_DIR / "src", sub)
@@ -117,10 +149,16 @@ def vendor(sub: str):
 
 @app.route("/health")
 def health():
+    try:
+        node_path: str | None = node_binary()
+    except RuntimeError:
+        node_path = None
     return jsonify({
         "ok": True,
         "wasm": (PUBLIC_DIR / "gambitfish.wasm").exists(),
-        "node": bool(shutil.which("node")),
+        "node": bool(node_path),
+        "nodePath": node_path,
+        "standalone": (ROOT / "gambitfish.html").exists(),
         "version": "1.0",
     })
 
